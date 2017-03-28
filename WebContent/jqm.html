@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="https://www.gstatic.com/firebasejs/3.7.3/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCf00hvwp5Ig2cemDnJWjnduCjBw0GT658",
+    authDomain: "werewolf-58743.firebaseapp.com",
+    databaseURL: "https://werewolf-58743.firebaseio.com",
+    storageBucket: "werewolf-58743.appspot.com",
+    messagingSenderId: "836018054147"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<meta charset="utf-8">
+
+<title>COMPANY</title>
+
+
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+</head>
+<body>
+
+<div data-role="page" id="pageone">
+  <div data-role="header">
+    <h1>Welcome To My Homepage</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    <p>Welcome! If you click on the link below, it will take you to Page Two.</p>
+      <label for='email'>Email: </label>
+
+     <input name = 'email' type="text" id="email">
+           <label for='password'>Password: </label>
+     <input name = 'password' type="text" id="password">
+           <label for='displayName'>displayName: </label>
+     <input name = 'displayName' type = 'text' id='displayName'>
+     <button id="submit">Login</button>
+  </div>
+
+  <div data-role="footer">
+    <h1>Footer Text</h1>
+  </div>
+</div> 
+
+<div data-role="page" id="pagetwo">
+  <div data-role="header">
+    <h1>Welcome To My Homepage</h1>
+   
+  </div>
+
+  <div data-role="main" class="ui-content">
+   
+    <label class='label label-info' id='show'></label>
+
+    <a href="#pageone">Go to Page One</a>
+  </div>
+
+  <div data-role="footer">
+    <h1>Footer Text</h1>
+  </div>
+</div> 
+
+<script>
+	$('#submit').on('click',function(){
+
+    var email = $("#email").val();
+    var password = $("#password").val();
+    
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        if (!error) {
+        } else {
+            alert(error);
+        }
+    }); 
+
+    var user = firebase.auth().currentUser;
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user!=null) {
+    var theUser = user.uid;
+    var displayName = $("#displayName").val();
+     firebase.database().ref('users/' + theUser).set({
+    displayName: displayName
+    // role: ,
+    // admin:,
+    // alive:,
+    // hunterSkill:,
+    // witchSavd:,
+    // witchKill:
+  });
+     var userdata;
+     var starCountRef = firebase.database().ref('users/'+theUser);
+starCountRef.on('value', function(snapshot) {
+   userdata = snapshot.val();
+});
+     $('#show').html(userdata['displayName']);
+     $.mobile.changePage('#pagetwo');
+  } else {
+    console.log('no user is signed in!!!');
+  }
+});
+
+
+
+  
+
+
+// var starCountRef = firebase.database().ref('users/');
+// starCountRef.on('value', function(snapshot) {
+//   console.log(snapshot.val());
+//   console.log(snapshot.val());
+// });
+
+
+             
+
+
+         
+
+         // user.delete().then(function(){
+         //  console.log('deleted!');
+         // }, function(error){
+         //  alert(error)
+         // });
+
+});
+</script>
+
+</body>
+</html>
